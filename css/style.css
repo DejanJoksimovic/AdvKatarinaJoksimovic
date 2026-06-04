@@ -1,0 +1,544 @@
+/* RESET */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    color: #1e293b;
+    background: #ffffff;
+    line-height: 1.7;
+}
+
+/* Prevent text selection and hide caret by default, but allow in form fields */
+html, body, *:not(input):not(textarea):not(select):not([contenteditable]) {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    /* hide text caret when elements somehow become editable */
+    caret-color: transparent;
+
+    /* use default arrow cursor for text/blocks */
+    cursor: default;
+}
+
+/* Keep interactive elements showing pointer cursor */
+a, button, .menu-btn, .bio-btn, .consultation-btn, .area-card, .mobile-menu a, .floating-call {
+    cursor: pointer;
+    /* still prevent selection on these elements */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Allow normal selection and caret in form controls and contenteditable areas */
+input, textarea, select, [contenteditable] {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    caret-color: auto;
+    cursor: text;
+}
+
+/* HEADER */
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-bottom: 1px solid #ececec;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px 24px;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+/* MOBILE MENU */
+
+.mobile-menu {
+    position: fixed;
+    top: 70px;
+    right: -100%;
+    width: 260px;
+    background: white;
+    box-shadow: -5px 0 20px rgba(0,0,0,.08);
+
+    display: flex;
+    flex-direction: column;
+
+    transition: .3s;
+    z-index: 999;
+}
+
+.mobile-menu.active {
+    right: 0;
+}
+
+.mobile-menu a {
+    padding: 18px;
+    text-decoration: none;
+    color: #1e293b;
+    border-bottom: 1px solid #ececec;
+}
+
+/* HERO */
+
+.hero {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 100px 20px 50px; /* reduced vertical spacing */
+}
+
+.hero h1 {
+    font-family: "Playfair Display", serif;
+    font-size: 3rem;
+    margin-bottom: 12px;
+}
+
+.hero h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #334155;
+}
+
+.hero p {
+    max-width: 700px;
+    margin-bottom: 40px;
+}
+
+/* CONSULTATION BUTTON */
+
+.consultation-wrapper {
+}
+
+.consultation-btn {
+    position: relative;
+
+    width: 260px;
+    height: 60px;
+
+    display: block;
+
+    text-decoration: none;
+
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: visible;
+}
+
+/* faces */
+.consultation-btn span {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+}
+
+.front {
+    background: #0f172a;
+    color: white;
+}
+
+.back {
+    display: none;
+}
+
+/* make sure hover/active/focus do not change transform or animate */
+.consultation-btn:hover,
+.consultation-btn:active,
+.consultation-btn:focus,
+.consultation-btn .front:hover,
+.consultation-btn .back:hover {
+    box-shadow: none !important;
+    opacity: 1 !important;
+}
+
+/* ensure no outline on focus (optional accessible change can be added) */
+.consultation-btn:focus {
+    outline: none;
+}
+
+/* GENERAL */
+
+.section {
+    padding: 50px 20px; /* reduced from 80px */
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 24px; /* reduced from 40px */
+
+    font-size: 2rem;
+    font-family: "Playfair Display", serif;
+}
+
+/* CAROUSELS */
+
+.cards-scroll {
+    display: flex;
+    gap: 20px;
+
+    overflow-x: auto;
+
+    scroll-snap-type: x mandatory;
+
+    padding-bottom: 10px; /* slightly reduced */
+}
+
+.cards-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.cards-scroll::-webkit-scrollbar-thumb {
+    background: #d6d6d6;
+    border-radius: 10px;
+}
+
+/* PRACTICE AREA CARDS */
+
+.area-card {
+    min-width: 280px;
+
+    text-decoration: none;
+    color: inherit;
+
+    background: #f8fafc;
+    border-radius: 16px;
+
+    padding: 30px;
+
+    box-shadow: 0 4px 20px rgba(0,0,0,.05);
+
+    scroll-snap-align: start;
+
+    transition: .25s;
+
+    position: relative;
+    overflow: hidden;
+    color: white; /* text over image */
+}
+
+.area-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+    pointer-events: none;
+}
+
+.area-card h3 {
+    font-size: 1.1rem;
+    position: relative; /* above overlay */
+    z-index: 2;
+}
+
+.area-card.porodicno {
+    background-image: url('../images/porodicno.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.area-card.nekretnine {
+    background-image: url('../images/nekretnine.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.area-card.krivicno {
+    background-image: url('../images/krivicno.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.area-card.steta {
+    background-image: url('../images/steta.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.area-card.radno {
+    background-image: url('../images/radno.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* BIOGRAPHY */
+
+.biography {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* reduced from 50px */
+}
+
+.bio-image {
+    flex: 1;
+}
+
+.bio-image img {
+    width: 100%;
+    border-radius: 20px;
+}
+
+.bio-content {
+    flex: 1;
+}
+
+.bio-content h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.bio-content p {
+    margin-bottom: 20px;
+}
+
+.bio-btn {
+    background: #0f172a;
+    color: white;
+
+    border: none;
+
+    padding: 14px 22px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+/* DRAWER */
+
+.drawer {
+    position: fixed;
+
+    top: 0;
+    right: -100%;
+
+    width: 420px;
+    max-width: 100%;
+
+    height: 100vh;
+
+    background: white;
+
+    box-shadow: -5px 0 20px rgba(0,0,0,.15);
+
+    transition: .3s;
+
+    z-index: 2000;
+}
+
+.drawer.active {
+    right: 0;
+}
+
+.drawer-content {
+    padding: 30px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+
+    font-size: 1.6rem;
+
+    cursor: pointer;
+
+    margin-bottom: 20px;
+}
+
+/* ADVANTAGES */
+
+.advantages {
+    max-width: 900px;
+    margin: auto;
+}
+
+.adv-item {
+    margin-bottom: 12px; /* reduced from 18px */
+    font-size: 1.05rem;
+}
+
+.adv-item.check::before {
+    content: "✓ ";
+    color: green;
+    font-weight: bold;
+}
+
+.adv-item.dash::before {
+    content: "— ";
+    color: #666;
+}
+
+/* QUOTES */
+
+.quote-card {
+    min-width: 300px;
+
+    background: #f8fafc;
+
+    border-radius: 16px;
+
+    padding: 25px;
+
+    scroll-snap-align: start;
+}
+
+.quote-card p {
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.quote-card span {
+    color: #64748b;
+}
+
+/* CONTACT */
+
+.contact {
+    text-align: center;
+}
+
+.contact p {
+    margin-bottom: 15px;
+}
+
+.contact a {
+    color: #0f172a;
+}
+
+.contact-button {
+    margin-top: 30px;
+
+    display: flex;
+    justify-content: center;
+}
+
+/* FLOATING CALL */
+
+.floating-call {
+    position: fixed;
+
+    bottom: 20px;
+    left: 20px;
+
+    width: 60px;
+    height: 60px;
+
+    border-radius: 50%;
+
+    background: #0f172a;
+    color: white;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+
+    font-size: 1.6rem;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,.2);
+
+    z-index: 999;
+}
+
+/* FOOTER */
+
+.footer {
+    text-align: center;
+    padding: 20px 20px; /* reduced from 30px */
+    border-top: 1px solid #ececec;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    .hero h1 {
+        font-size: 2.3rem;
+    }
+
+    .hero h2 {
+        font-size: 1.3rem;
+    }
+
+    .biography {
+        flex-direction: column;
+    }
+
+    .bio-content {
+        text-align: center;
+    }
+
+    .floating-call {
+        display: flex;
+    }
+
+    /* On mobile disable flip and show only the label (tel link) */
+
+    .consultation-btn {
+        width: 280px;
+        transform: none !important;
+    }
+
+    .consultation-btn .back {
+        display: none;
+    }
+
+    .consultation-btn .front {
+        position: relative;
+        display: flex;
+    }
+
+}
+
+@media (min-width: 769px) {
+
+    .mobile-menu {
+        width: 300px;
+    }
+}

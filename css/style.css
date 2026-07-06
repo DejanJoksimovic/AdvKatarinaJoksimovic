@@ -17,6 +17,59 @@ body {
     line-height: 1.7;
 }
 
+/* Apply consistent base font-size only to non-index pages by using
+   the `content` body class. Add this class to pages that should
+   share the same typography (we will add it to all HTML except index.html). */
+.content {
+    font-size: 16px;
+}
+
+/* Normalize main text and headings inside `.content` pages so all
+   non-index pages display identical typography. */
+.content p {
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.content p strong,
+.content p b {
+    font-size: 18px !important;
+    font-weight: 700;
+}
+
+.content .section-title {
+    font-size: 2rem; /* keep existing scale but scoped to content pages */
+}
+
+.content .section {
+    padding-top: 12px; /* slightly tighter top padding inside content pages */
+}
+
+/* Override large inline margins and font-size coming from pasted Word HTML */
+.content .section p,
+.content .section div,
+.content .section ul,
+.content .section ol,
+.content .section li {
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+    font-size: 16px !important;
+    line-height: 1.7 !important;
+}
+
+.content .section p strong,
+.content .section li strong,
+.content .section p b,
+.content .section li b,
+.content .section span {
+    font-size: 18px !important;
+}
+
+@media (max-width: 768px) {
+    .move-down { margin-top: 20px; }
+    .content .section { padding-top: 8px; }
+}
+
 /* Prevent text selection and hide caret by default, but allow in form fields */
 html, body, *:not(input):not(textarea):not(select):not([contenteditable]) {
     -webkit-user-select: none;
@@ -122,28 +175,39 @@ input, textarea, select, [contenteditable] {
     text-align: center;
 
     padding: 100px 20px 50px; /* reduced vertical spacing */
+
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('../images/topOfThePageBack.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
 }
 
 .hero h1 {
     font-family: "Playfair Display", serif;
     font-size: 3rem;
     margin-bottom: 12px;
+    color: white;
 }
 
 .hero h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #334155;
+    color: #f0f0f0;
+    font-size: 2.5rem;
 }
 
-.hero p {
+.hero h3 {
     max-width: 700px;
     margin-bottom: 40px;
+    color: #f0f0f0;
+    font-size: 1.75rem;
 }
 
 /* CONSULTATION BUTTON */
 
 .consultation-wrapper {
+    perspective: 1000px;
 }
 
 .consultation-btn {
@@ -156,9 +220,16 @@ input, textarea, select, [contenteditable] {
 
     text-decoration: none;
 
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-transition: -webkit-transform .6s cubic-bezier(.2,.8,.2,1);
+    transition: transform .6s cubic-bezier(.2,.8,.2,1);
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
+
     cursor: pointer;
     border-radius: 12px;
-    overflow: visible;
+    overflow: hidden;
 }
 
 /* faces */
@@ -174,16 +245,103 @@ input, textarea, select, [contenteditable] {
 
     border-radius: 12px;
 
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+
     font-weight: 600;
+    -webkit-transition: background-color .25s ease, color .25s ease, -webkit-transform .2s ease, opacity .2s ease;
+    transition: background-color .25s ease, color .25s ease, transform .2s ease, opacity .2s ease;
 }
 
 .front {
     background: #0f172a;
     color: white;
+    transform: rotateX(0deg) translateZ(0);
+    z-index: 2;
 }
 
 .back {
-    display: none;
+    background: #c9a227;
+    color: white;
+    transform: rotateX(180deg) translateZ(0);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1;
+    transition: opacity .2s ease, visibility .2s ease;
+}
+
+.consultation-btn.show-number {
+    transform: rotateX(180deg);
+}
+
+.consultation-btn.show-number .front {
+    transform: rotateX(180deg);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1;
+}
+
+.consultation-btn.show-number .back {
+    transform: rotateX(0deg);
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+}
+
+/* tactile press animation */
+.consultation-btn:active {
+    -webkit-transform: scale(.98);
+    transform: scale(.98);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,.06);
+}
+
+/* number-shown state: show number on front without 3D flip */
+.consultation-btn.number-shown {
+    -webkit-transform: none !important;
+    transform: none !important;
+}
+
+.consultation-btn.number-shown .front {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    letter-spacing: .5px;
+    background: #c9a227 !important;
+    color: white !important;
+    -webkit-transform: scale(1.02);
+    transform: scale(1.02);
+    -webkit-transition: background-color .25s ease, -webkit-transform .2s ease;
+    transition: background-color .25s ease, transform .2s ease;
+}
+
+.consultation-btn.number-shown .back {
+    display: none !important;
+}
+
+/* When `.number-shown` is used instead, show the number on the front (no 3D flip)
+   This is a cross-browser fallback so the button remains visible and readable. */
+.consultation-btn.number-shown {
+    -webkit-transform: none !important;
+    transform: none !important;
+}
+
+.consultation-btn.number-shown .front {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+
+.consultation-btn.number-shown .front {
+    background: #c9a227 !important;
+    color: white !important;
+}
+
+.consultation-btn.number-shown .back {
+    display: none !important;
 }
 
 /* make sure hover/active/focus do not change transform or animate */
@@ -196,6 +354,17 @@ input, textarea, select, [contenteditable] {
     opacity: 1 !important;
 }
 
+@media (max-width: 768px) {
+    .consultation-btn {
+        transform: none;
+        transition: none;
+    }
+
+    .consultation-btn .back {
+        display: none;
+    }
+}
+
 /* ensure no outline on focus (optional accessible change can be added) */
 .consultation-btn:focus {
     outline: none;
@@ -204,8 +373,7 @@ input, textarea, select, [contenteditable] {
 /* GENERAL */
 
 .section {
-    padding: 50px 20px; /* reduced from 80px */
-}
+    padding: 15px 20px; /* reduced from 80px */    scroll-margin-top: 80px; /* offset for fixed header */}
 
 .section-title {
     text-align: center;
@@ -213,6 +381,10 @@ input, textarea, select, [contenteditable] {
 
     font-size: 2rem;
     font-family: "Playfair Display", serif;
+}
+
+.move-down {
+    margin-top: 80px;
 }
 
 /* CAROUSELS */
@@ -228,6 +400,13 @@ input, textarea, select, [contenteditable] {
     padding-bottom: 10px; /* slightly reduced */
 }
 
+@media (min-width: 769px) {
+    .cards-scroll {
+        width: 100%;
+        min-width: 100%;
+    }
+}
+
 .cards-scroll::-webkit-scrollbar {
     height: 8px;
 }
@@ -241,9 +420,10 @@ input, textarea, select, [contenteditable] {
 
 .area-card {
     min-width: 280px;
+    min-height: 300px;
 
     text-decoration: none;
-    color: inherit;
+    color: #0f172a;
 
     background: #f8fafc;
     border-radius: 16px;
@@ -258,14 +438,26 @@ input, textarea, select, [contenteditable] {
 
     position: relative;
     overflow: hidden;
-    color: white; /* text over image */
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 2px solid #0f172a;
+}
+
+@media (min-width: 769px) {
+    .area-card {
+        flex: 1 1 auto;
+        min-width: 200px;
+    }
 }
 
 .area-card::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+    background: none;
     pointer-events: none;
 }
 
@@ -273,36 +465,29 @@ input, textarea, select, [contenteditable] {
     font-size: 1.1rem;
     position: relative; /* above overlay */
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
-.area-card.porodicno {
-    background-image: url('../images/porodicno.jpg');
-    background-size: cover;
-    background-position: center;
+.area-card-badge {
+    display: block;
+    color: #c9a227;
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+
+    border-radius: 12px;
 }
 
-.area-card.nekretnine {
-    background-image: url('../images/nekretnine.jpg');
-    background-size: cover;
-    background-position: center;
-}
-
-.area-card.krivicno {
-    background-image: url('../images/krivicno.jpg');
-    background-size: cover;
-    background-position: center;
-}
-
-.area-card.steta {
-    background-image: url('../images/steta.jpg');
-    background-size: cover;
-    background-position: center;
-}
-
-.area-card.radno {
-    background-image: url('../images/radno.jpg');
-    background-size: cover;
-    background-position: center;
+.area-card-text {
+    display: block;
+    font-size: .95rem;
+    line-height: 1.5;
 }
 
 /* BIOGRAPHY */
@@ -311,10 +496,13 @@ input, textarea, select, [contenteditable] {
     display: flex;
     align-items: center;
     gap: 30px; /* reduced from 50px */
+    justify-content: center;
 }
 
 .bio-image {
     flex: 1;
+    display: flex;
+    justify-content: center;
 }
 
 .bio-image img {
@@ -323,7 +511,12 @@ input, textarea, select, [contenteditable] {
 }
 
 .bio-content {
-    flex: 1;
+    flex: 0 1 900px;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .bio-content h2 {
@@ -346,6 +539,8 @@ input, textarea, select, [contenteditable] {
     border-radius: 10px;
 
     cursor: pointer;
+    display: inline-block;
+    margin: 0 auto;
 }
 
 /* DRAWER */
@@ -360,6 +555,8 @@ input, textarea, select, [contenteditable] {
     max-width: 100%;
 
     height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 
     background: white;
 
@@ -378,6 +575,17 @@ input, textarea, select, [contenteditable] {
     padding: 30px;
 }
 
+@media (min-width: 769px) {
+    .drawer {
+        width: 840px;
+    }
+
+    .drawer-content {
+        width: 840px;
+        max-width: 100%;
+    }
+}
+
 .close-btn {
     background: none;
     border: none;
@@ -394,11 +602,21 @@ input, textarea, select, [contenteditable] {
 .advantages {
     max-width: 900px;
     margin: auto;
+    text-align: center;
+    border: 2px solid #0f172a;
+    border-radius: 8px;
+    padding: 40px;
+    background: #ffffff;
+    box-shadow: 0 4px 16px rgba(0,0,0,.1);
 }
 
 .adv-item {
     margin-bottom: 12px; /* reduced from 18px */
     font-size: 1.05rem;
+}
+
+.adv-item.check {
+    font-weight: bold;
 }
 
 .adv-item.check::before {
@@ -407,15 +625,15 @@ input, textarea, select, [contenteditable] {
     font-weight: bold;
 }
 
-.adv-item.dash::before {
-    content: "— ";
-    color: #666;
+.adv-item.italic {
+    font-style: italic;
 }
 
 /* QUOTES */
 
 .quote-card {
     min-width: 300px;
+    /* min-height: 300px; */
 
     background: #f8fafc;
 
@@ -426,13 +644,57 @@ input, textarea, select, [contenteditable] {
     scroll-snap-align: start;
 }
 
+.quote-cards {
+    align-items: stretch;
+}
+
+.quote-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .quote-card p {
     font-style: italic;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
 }
 
 .quote-card span {
     color: #64748b;
+}
+
+@media (min-width: 769px) {
+    .quote-card {
+        flex: 1 1 auto;
+        min-width: 200px;
+    }
+}
+
+/* TABLE OF CONTENTS */
+
+.table-of-contents {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.toc-link {
+    display: block;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #0f172a;
+    border-left: 4px solid #c9a227;
+    transition: .25s;
+    font-weight: 500;
+}
+
+.toc-link:hover {
+    background: #e2e8f0;
+    transform: translateX(4px);
 }
 
 /* CONTACT */
@@ -441,16 +703,59 @@ input, textarea, select, [contenteditable] {
     text-align: center;
 }
 
+.contact-info {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.contact-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #0f172a;
+    font-weight: 500;
+}
+
+.contact-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #0f172a;
+    font-size: 1rem;
+    font-family: "Segoe UI Symbol", "Arial", sans-serif;
+}
+
+.contact-phone {
+    color: #16a34a;
+}
+
 .contact p {
     margin-bottom: 15px;
 }
 
 .contact a {
     color: #0f172a;
+    text-decoration: none;
+}
+
+.contact-mail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.contact-icon.contact-mail {
+    color: #0f172a;
 }
 
 .contact-button {
-    margin-top: 30px;
+    margin-top: 10px;
+    margin-bottom: 20px;
 
     display: flex;
     justify-content: center;
@@ -461,11 +766,11 @@ input, textarea, select, [contenteditable] {
 .floating-call {
     position: fixed;
 
-    bottom: 20px;
-    left: 20px;
+    bottom: 24px;
+    left: 24px;
 
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
 
     border-radius: 50%;
 
@@ -479,11 +784,51 @@ input, textarea, select, [contenteditable] {
 
     text-decoration: none;
 
-    font-size: 1.6rem;
+    font-size: 1.4rem;
 
     box-shadow: 0 8px 25px rgba(0,0,0,.2);
 
     z-index: 999;
+}
+
+.scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f172a;
+    color: white;
+    text-decoration: none;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    box-shadow: 0 14px 30px rgba(0,0,0,.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px);
+    transition: opacity .25s ease, transform .25s ease, visibility .25s ease;
+    z-index: 1100;
+}
+
+.scroll-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-top:hover {
+    background: #c9a227;
+    color: #0f172a;
+}
+
+@media (max-width: 768px) {
+    .scroll-top {
+        bottom: 24px;
+        right: 18px;
+    }
 }
 
 /* FOOTER */
@@ -504,6 +849,10 @@ input, textarea, select, [contenteditable] {
 
     .hero h2 {
         font-size: 1.3rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
     }
 
     .biography {

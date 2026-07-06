@@ -12,7 +12,21 @@ menuBtn.addEventListener("click", () => {
 const menuLinks = mobileMenu.querySelectorAll("a");
 
 menuLinks.forEach(link => {
-    link.addEventListener("click", () => {
+    link.addEventListener("click", (event) => {
+        if (
+            window.matchMedia('(min-width: 769px)').matches &&
+            link.getAttribute('href') === '#biografija'
+        ) {
+            // event.preventDefault();
+
+            const targetSection = document.querySelector('#biografija');
+            if (targetSection) {
+                const offset = -100;
+                const top = Math.max(targetSection.offsetTop + offset, 0);
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+        }
+
         mobileMenu.classList.remove("active");
     });
 });
@@ -66,6 +80,7 @@ document.addEventListener("keydown", (event) => {
 // HEADER SHADOW ON SCROLL
 
 const header = document.querySelector(".header");
+const scrollTopBtn = document.getElementById('scrollTopBtn');
 
 window.addEventListener("scroll", () => {
 
@@ -81,7 +96,22 @@ window.addEventListener("scroll", () => {
 
     }
 
+    if (scrollTopBtn) {
+        if (window.scrollY > 120) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    }
+
 });
+
+if (scrollTopBtn) {
+    scrollTopBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
 
 // ACTIVE MENU CLOSE WHEN CLICKING OUTSIDE
 
@@ -105,20 +135,39 @@ document.addEventListener("click", (event) => {
 
 });
 
-// MOBILE ONLY: Android consultation dialing
+// CONSULTATION BUTTON BEHAVIOR
 const consultationBtns = document.querySelectorAll('.consultation-btn');
 
-const isMobileAndroid = () => {
-    return window.matchMedia('(max-width: 768px)').matches &&
-        /Android/i.test(navigator.userAgent);
+const isMobile = () => {
+    return window.matchMedia('(max-width: 768px)').matches;
 };
 
 consultationBtns.forEach(btn => {
     btn.addEventListener('click', (event) => {
         event.preventDefault();
-        if (!isMobileAndroid()) return;
+
         const phoneNumber = btn.dataset.phone || '+38163434047';
-        window.location.href = `tel:${phoneNumber}`;
+        const front = btn.querySelector('.front');
+
+        if (isMobile()) {
+            window.location.href = `tel:${phoneNumber}`;
+            return;
+        }
+
+        // desktop: show number on the front face instead of performing 3D flip
+        if (!btn.dataset.origLabel) {
+            btn.dataset.origLabel = front.textContent.trim();
+        }
+
+        if (btn.classList.contains('number-shown')) {
+            // restore
+            front.textContent = btn.dataset.origLabel;
+            btn.classList.remove('number-shown');
+        } else {
+            // show number on front
+            front.textContent = "062/351-611";
+            btn.classList.add('number-shown');
+        }
     });
 });
 
